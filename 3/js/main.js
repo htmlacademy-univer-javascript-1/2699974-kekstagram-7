@@ -1,10 +1,12 @@
-const getRandomInteger = (min, max) => {
-  const lower = Math.ceil(Math.min(Math.abs(min), Math.abs(max)));
-  const upper = Math.floor(Math.max(Math.abs(min), Math.abs(max)));
-  return Math.floor(Math.random() * (upper - lower + 1)) + lower;
-};
-
-const getRandomArrayElement = (elements) => elements[getRandomInteger(0, elements.length - 1)];
+const PHOTOS_COUNT = 25;
+const LIKES_MIN = 15;
+const LIKES_MAX = 200;
+const COMMENTS_MIN = 0;
+const COMMENTS_MAX = 30;
+const AVATAR_MIN = 1;
+const AVATAR_MAX = 6;
+const MESSAGE_PARTS_MIN = 1;
+const MESSAGE_PARTS_MAX = 2;
 
 const NAMES = [
   'Артём', 'Иван', 'Мария', 'Анна', 'Кекс', 'Елена', 'Дмитрий', 'Ольга', 'Сергей', 'Наталья',
@@ -23,23 +25,31 @@ const DESCRIPTIONS = [
 
 let commentIdCounter = 1;
 
+const getRandomInteger = (min, max) => {
+  const lower = Math.ceil(Math.min(Math.abs(min), Math.abs(max)));
+  const upper = Math.floor(Math.max(Math.abs(min), Math.abs(max)));
+  return Math.floor(Math.random() * (upper - lower + 1)) + lower;
+};
+
+const getRandomArrayElement = (elements) => elements[getRandomInteger(0, elements.length - 1)];
+
 const createComment = () => {
   const messageParts = [];
-  const partsCount = getRandomInteger(1, 2);
+  const partsCount = getRandomInteger(MESSAGE_PARTS_MIN, MESSAGE_PARTS_MAX);
   for (let i = 0; i < partsCount; i++) {
     messageParts.push(getRandomArrayElement(MESSAGES));
   }
 
   return {
     id: commentIdCounter++,
-    avatar: `img/avatar-${getRandomInteger(1, 6)}.svg`,
+    avatar: `img/avatar-${getRandomInteger(AVATAR_MIN, AVATAR_MAX)}.svg`,
     message: messageParts.join(' '),
     name: getRandomArrayElement(NAMES),
   };
 };
 
 const createComments = () => {
-  const count = getRandomInteger(0, 30);
+  const count = getRandomInteger(COMMENTS_MIN, COMMENTS_MAX);
   const comments = [];
   for (let i = 0; i < count; i++) {
     comments.push(createComment());
@@ -51,13 +61,13 @@ const createPhoto = (index) => ({
   id: index,
   url: `photos/${index}.jpg`,
   description: getRandomArrayElement(DESCRIPTIONS),
-  likes: getRandomInteger(15, 200),
+  likes: getRandomInteger(LIKES_MIN, LIKES_MAX),
   comments: createComments(),
 });
 
 const generatePhotos = () => {
   const photos = [];
-  for (let i = 1; i <= 25; i++) {
+  for (let i = 1; i <= PHOTOS_COUNT; i++) {
     photos.push(createPhoto(i));
   }
   return photos;
@@ -65,5 +75,4 @@ const generatePhotos = () => {
 
 const similarPhotos = generatePhotos();
 
-// eslint-disable-next-line no-console
-console.log(similarPhotos);
+window.similarPhotos = similarPhotos;
